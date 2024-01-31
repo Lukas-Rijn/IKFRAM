@@ -1,0 +1,13 @@
+{
+    "mappings": {
+        "properties": {
+            "id"        : {"type": "keyword"},
+            "sender"    : {"type": "keyword"},
+            "content"   : {"type": "text"},
+            "date"      : {
+                "type": "date",
+                "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+            }
+        }
+    }
+}
