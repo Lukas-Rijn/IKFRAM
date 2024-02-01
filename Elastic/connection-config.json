@@ -1,0 +1,6 @@
+{
+    "ELASTIC_HOST": "http://127.0.0.1:9200/",
+    "ELASTIC_USERNAME": "lukas",
+    "ELASTIC_PASSWORD": "123321",
+    "ELASTIC_CERT_FINGERPRINT": "87:20:81:88:07:13:7d:35:79:08:a3:05:31:83:af:66:1a:e9:bd:33:e8:45:73:0a:49:45:b2:b2:c7:17:be:87"
+}

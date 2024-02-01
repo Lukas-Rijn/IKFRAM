@@ -108,9 +108,9 @@ def main():
     args = parser.parse_args()
 
     print(args.input)
-    TAR_PATH = "C:\\Users\\luuk9\\DevelopStuff\\IKFRAM\\resources\\Dump.tar"
     DATABASE_PATH = "Dump/data/data/com.android.providers.telephony/databases/mmssms.db"
-    INDEX_NAME = "ikfram"
+    INDEX_NAME = "ikfram-1"
+    TAR_PATH = "C:\\Users\\luuk9\\DevelopStuff\\IKFRAM\\resources\\Dump.tar"
 
     setLogger()
     startTime = time.time()
@@ -128,8 +128,8 @@ def main():
         )
     createIndex(ES_CLIENT, INDEX_NAME, mappings)
     
-    extractDBfromTar(TAR_PATH, DATABASE_PATH)
-    textRows = getRowsFromTable(DATABASE_PATH)
+    #extractDBfromTar(TAR_PATH, DATABASE_PATH)
+    textRows = getRowsFromTable(DATABASE_PATH, "messages")
 
     docList = []
     for text in textRows:
