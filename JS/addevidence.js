@@ -51,7 +51,6 @@ window.onload = () =>{
 
     async function extractDB(e){
         e.preventDefault();
-        console.log(selectedDBValue)
 
         if(!selectedDBValue){
             console.log("No file selected")
