@@ -50,16 +50,16 @@ async function getDocOnContent(client, content){
     }).then(resp => {return resp})
 }
 
-function getDatabase(dbName){
+async function getDatabase(dbName, res){
   const db = new sqlite3.Database(".\\uploads\\" + dbName, sqlite3.OPEN_READ);
   let sql = "SELECT * FROM messages;"
-  let data = []
   
   db.all(sql, [], (err, rows) => {
-     if (err) {
+    if (err) {
       throw err;
     }
-    return rows
+    res.status(200).json(rows)
+    return;
   });
 }
 
@@ -116,7 +116,7 @@ app.post("/upload", async (req, res) => {
 
 app.post("/extract", (req, res) => {
   const dbName = req.body.dbName
-  console.log(getDatabase(dbName))
+  getDatabase(dbName, res)
 });
 
 
