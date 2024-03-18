@@ -8,6 +8,7 @@
 
 <body>
     <script type="module" src="https://d3js.org/d3.v7.js"></script>
+    
     <div class="info">
         <label for="indices"></label>
         <ul id="indices"></ul>
@@ -19,6 +20,7 @@
         <label for="queryField">Search term</label>
         <input type="input" id="queryField" name="queryField">
         <button type="button" id="querySubmit">Search</button>
+        <button type="button" id="analyseBtn">Analyse</button>
     </div>
     <div class="queryResult">
         <label for="docId">Document ID: </label>
@@ -30,6 +32,7 @@
         <label for="sentDate">Sent date:</label>
         <p id="sentDate"></p>
     </div>
+    <div id="chart"></div>
 
     <input type="button" onclick="location.href='addevidence.html';" value="go to extract page" />
     <script src="..\\JS\\query.js"></script> 

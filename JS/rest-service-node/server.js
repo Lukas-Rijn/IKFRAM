@@ -141,7 +141,6 @@ async function getIndexNames(client){
   return indexNames;
 }
 
-
 //App
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "..\\..\\HTML\\index.html"));
@@ -169,8 +168,8 @@ app.get("/indices", (req, res) => {
   })
 });
 
-app.get("/elastic", (req, res) => {
-    asyncJob = getAllDocs(client)
+app.post("/elastic", (req, res) => {
+    asyncJob = getAllDocs(client, req.body.indexName)
     asyncJob.then(function(jobResult) {
         res.send(jobResult)
      })   
@@ -179,7 +178,7 @@ app.get("/elastic", (req, res) => {
 app.post("/search", (req, res) => {
     const indexName = req.body.indexName;
     const content = req.body.content;
-    asyncJob = getDocOnContent(client, indexName, content);
+    asyncJob = getDocOnSender(client, indexName, content);
     asyncJob.then(function(jobResult) {
         res.send(jobResult)
      });
