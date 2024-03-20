@@ -17,6 +17,11 @@
         <p id="selectedIndex">none</p>
     </div>
     <div class="queryForm">
+        <label for="queryOption">Choose query field:</label> 
+            <select name="queryOption" id="queryOption"> 
+                <option value="content">Content</option> 
+                <option value="sender">Sender</option> 
+            </select>
         <label for="queryField">Search term</label>
         <input type="input" id="queryField" name="queryField">
         <button type="button" id="querySubmit">Search</button>
@@ -32,9 +37,14 @@
         <label for="sentDate">Sent date:</label>
         <p id="sentDate"></p>
     </div>
+    <div id=""wordCloud>
+        <button type="button" id="timeBtn">timeline</button>
+    </div>
     <div id="chart"></div>
 
     <input type="button" onclick="location.href='addevidence.html';" value="go to extract page" />
+    
     <script src="..\\JS\\query.js"></script> 
+    
 </body>
 </html>

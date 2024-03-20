@@ -175,13 +175,22 @@ app.post("/elastic", (req, res) => {
      })   
 });
 
-app.post("/search", (req, res) => {
+app.post("/sender", (req, res) => {
     const indexName = req.body.indexName;
     const content = req.body.content;
     asyncJob = getDocOnSender(client, indexName, content);
     asyncJob.then(function(jobResult) {
         res.send(jobResult)
      });
+});
+
+app.post("/content", (req, res) => {
+  const indexName = req.body.indexName;
+  const content = req.body.content;
+  asyncJob = getDocOnContent(client, indexName, content);
+  asyncJob.then(function(jobResult) {
+      res.send(jobResult)
+   });
 });
 
 app.post("/upload", async (req, res) => {
