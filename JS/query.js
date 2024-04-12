@@ -2,6 +2,9 @@ window.onload = () =>{
     const queryOption   = document.querySelector('#queryOption');
     const queryField    = d3.select('#queryField');
     const querySubmit   = d3.select('#querySubmit');
+    const queryResult   = d3.select('#queryResult');
+    const nxtBtn        = d3.select('#nxtBtn');
+    const prvBtn        = d3.select('#prvBtn');
     const docId         = d3.select('#docId');
     const sender        = d3.select('#sender');
     const content       = d3.select('#content');
@@ -9,19 +12,23 @@ window.onload = () =>{
     const refreshBtn    = d3.select('#refresh');
     const analyseBtn    = d3.select('#analyseBtn');
     const selectedIndex = d3.select('#selectedIndex');
-    const timeBtn = d3.select('#timeBtn');
+    const timeBtn       = d3.select('#timeBtn');
 
     let selectedIndexValue = ""
-    let indexData = []
     // Dimensions
     let dimensions = {
-        width: 600,
-        height: 600,
-        margins: 10,
-    };
+        width: 800,
+        height: 800,
+        margin: {
+          top: 50,
+          bottom: 50,
+          left: 50,
+          right: 50
+        }
+      }
 
-    dimensions.ctrWidth = dimensions.width - dimensions.margins * 2
-    dimensions.ctrHeight = dimensions.height - dimensions.margins * 2
+    dimensions.ctrWidth = dimensions.width - dimensions.margin.left - dimensions.margin.right
+    dimensions.ctrHeight = dimensions.height - dimensions.margin.top - dimensions.margin.bottom
     const radius = dimensions.ctrWidth / 2
 
     const svg = d3.select('#chart')
@@ -29,11 +36,11 @@ window.onload = () =>{
         .attr("width", dimensions.width)
         .attr("height", dimensions.height)
         .style('overflow', 'visible');
-        //.style('margin-top', '400px');
+
     const ctr = svg.append("g") // <g>
     .attr(
       "transform",
-      `translate(${dimensions.margins}, ${dimensions.margins})`
+      `translate(${dimensions.margin.left}, ${dimensions.margin.top})`
     )
 
     async function refreshIndexList(e){
@@ -203,16 +210,37 @@ window.onload = () =>{
         })
         .then(res => res.json())
         .then(data => {
-            docId   .text(data.hits.hits[0]._source.id);
-            sender  .text(data.hits.hits[0]._source.sender);
-            content .text(data.hits.hits[0]._source.content);
-            sentDate.text(data.hits.hits[0]._source.date);
+            let i = 0;
+            if(data.hits.total.value == 0){docId.text("No results")}
+            else{
+                nxtBtn.on("click", () =>{
+                    console.log(i)
+                    i+=1;
+                    if(i > data.hits.hits.length - 1){i = 0}
+                    setQueryResult(i, data)
+                });
+                prvBtn.on("click", () =>{
+                    console.log(i)
+                    i-=1;
+                    if(i < 0){i = data.hits.hits.length - 1}
+                    setQueryResult(i, data)
+                    });
+                setQueryResult(i, data)
+            }
         })
         .catch(err => console.log(err));
     }
 
+    function setQueryResult(index, data){
+        docId   .text(data.hits.hits[index]._source.id);
+        sender  .text(data.hits.hits[index]._source.sender);
+        content .text(data.hits.hits[index]._source.content);
+        sentDate.text(data.hits.hits[index]._source.date);
+    }
+
     async function doTimeline(){
         const timestamps = [];
+
         await fetch("http://127.0.0.1:5000/elastic", {
             method: "POST",
             headers: {
@@ -226,22 +254,54 @@ window.onload = () =>{
         .then(res => res.json())
         .then(data => {
             for(item of data.hits.hits){
-                timestamps.push(item._source.date)
-            }
+                timestamps.push(new Date(item._source.date))
+                    }
+
         })
         .catch(err => console.log(err));
         
+        const svg = d3.select("#chart")
+            .append('svg')
+            .attr('width', dimensions.width)
+            .attr('height', dimensions.height);
+        const ctr = svg.append('g')
+            .attr(
+              'transform',
+              `translate(${dimensions.margin.left}, ${dimensions.margin.top})`
+            )
+
+        const domain = d3.extent(timestamps);
+        const xScale = d3.scaleTime()
+            .domain(domain)
+            .range([0, 555])
+            .nice();
+
+        ctr.selectAll("circle")
+            .data(timestamps)
+            .join('circle')
+            .attr("cx", (d) => xScale(d))
+            .attr("cy", 35)
+            .attr("r", 5)
+            .attr("fill", "black");
         
+        const xAxis = d3.axisBottom(xScale)
+            .ticks(timestamps.length);
+
+        ctr.append("text")
+            .attr("transform", "translate(300,95)")
+           .style("text-anchor", "middle")
+           .attr("fill", "black")
+           .text("Dates");
         
+        ctr.append("g")
+            .attr("transform", "translate(0,60)")
+            .call(xAxis.ticks(d3.timeDay));
     }
-
-      
-
-      
-    
+ 
     refreshBtn.on("click", refreshIndexList);
     analyseBtn.on("click", analyseData);
     querySubmit.on("click", sendQuery);
     timeBtn.on("click", doTimeline);
+   
     
 }
